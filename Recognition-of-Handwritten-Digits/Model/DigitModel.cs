@@ -8,13 +8,19 @@ namespace Recognition_of_Handwritten_Digits.Model
 {
     class DigitModel
     {
-        public int Digit;
-        public int[] DigitRepresentation;
+        public byte Digit;
+        public byte[] DigitRepresentation;
 
-        public DigitModel(int digit, int[] digitRepresentation)
+        public DigitModel(byte digit, byte[] digitRepresentation)
         {
             Digit = digit;
             DigitRepresentation = digitRepresentation;
+        }
+
+        public DigitModel(byte digit, int pixelsCount)
+        {
+            Digit = digit;
+            DigitRepresentation = new byte[pixelsCount];
         }
     }
 }

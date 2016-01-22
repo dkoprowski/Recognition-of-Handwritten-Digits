@@ -24,14 +24,15 @@ namespace Recognition_of_Handwritten_Digits
             }
 
             var start = DateTime.Now;
-            ParseCsvToModel("train.csv");
+            //  ParseCsvToModel("train.csv");
+            ParseCsvAsStream("train.csv", 28*28);
             var finish = DateTime.Now;
 
             Console.WriteLine("[TIME] Whole time for _"+digitModels.Count+"_ records: " + (finish - start).TotalMilliseconds);
-        //    PrintDigit(digitModels[0]);
+            PrintDigit(digitModels[0]);
             Console.ReadKey();
         }
-
+        /*
         static void ParseCsvToModel(string csvPath)
         {
             var reader = new StreamReader(File.OpenRead(csvPath));
@@ -62,6 +63,41 @@ namespace Recognition_of_Handwritten_Digits
             Console.WriteLine("[TIME] Whole split: " + splitTime);
             Console.WriteLine("[TIME] Whole parse time: " + (whileFinish - whileStart).TotalMilliseconds);
         }
+        */
+        static void ParseCsvAsStream(string csvPath,int pictureSize)
+        {
+            var file = File.ReadAllText(csvPath);
+            byte acumulator = 0;
+            int pixelNr = 0;
+            byte digitLabel = (byte)(file[0] - '0');
+            DigitModel currentModel = new DigitModel(digitLabel, pictureSize);
+            for (int i = 1; i < file.Length; i++)
+            {
+                char currentChar = file[i];
+                if ((i + 1) == file.Length)
+                {
+                    digitModels.Add(currentModel);
+                }
+                else if (currentChar == '\n')
+                {
+                    digitModels.Add(currentModel);
+                    digitLabel = (byte)(file[i + 1] - '0');
+                    currentModel = new DigitModel(digitLabel, pictureSize);
+                    pixelNr = 0;
+                    i += 1;
+                }
+                else if (currentChar >= '0' && currentChar <= '9')
+                {
+                    acumulator = (byte)(acumulator * 10 + (currentChar - '0'));
+                }
+                else if (pixelNr < pictureSize)
+                {
+                    currentModel.DigitRepresentation[pixelNr] = acumulator;
+                    acumulator = 0;
+                    pixelNr++;
+                }
+            }
+        }
 
         static int OptimizedIntConversion(string s)
         {
@@ -79,18 +115,19 @@ namespace Recognition_of_Handwritten_Digits
     static void PrintDigit(DigitModel digit)
         {
             Console.WriteLine("\n\n"+digit.Digit);
-            for (int i = 0; i < Math.Sqrt(digit.DigitRepresentation.Length); i++)
+            int rowLength = (int)Math.Sqrt(digit.DigitRepresentation.Length);
+            for (int i = 0; i < rowLength; i++)
             {
-                for (int j = 0; j < Math.Sqrt(digit.DigitRepresentation.Length); j++)
+                for (int j = 0; j < rowLength; j++)
                 {
-                    int pixel = digit.DigitRepresentation[(i * (int)Math.Sqrt(digit.DigitRepresentation.Length)) + j];
+                    int pixel = digit.DigitRepresentation[(i * rowLength) + j];
                     if(pixel != 0)
                     {
                         Console.Write(" ");
                     }
                     else
                     {
-                        Console.Write(pixel);
+                        Console.Write((char)176);
                     }
                 }
                 Console.WriteLine();
