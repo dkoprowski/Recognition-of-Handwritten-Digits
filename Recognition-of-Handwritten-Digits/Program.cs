@@ -34,11 +34,33 @@ namespace Recognition_of_Handwritten_Digits
         
         static void Communication()
         {
+
+            string option = "q";
+            do
+            {
+                Console.WriteLine("\nSelect one option:");
+                Console.WriteLine("\t[1] Print one digit");
+                Console.WriteLine("\t[q] Quit");
+                option = Console.ReadLine();
+                Answer(option);
+
+            } while (option != "q");
+
+        }
+
+        static void Answer(string option)
+        {
             DigitPrinter digitPrinter = new DigitPrinter();
-            digitPrinter.PrintDigit(digitModels[0]);
 
+            switch (option)
+            {
+                case "1":
+                    Console.WriteLine("Write digit index:");
+                    var index = int.Parse( Console.ReadLine());
+                    digitPrinter.PrintDigit(digitModels[index]);
+                    break;
+            }
 
-            Console.ReadKey();
         }
     }
 }

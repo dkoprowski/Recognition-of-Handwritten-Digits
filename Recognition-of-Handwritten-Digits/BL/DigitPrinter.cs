@@ -11,7 +11,7 @@ namespace Recognition_of_Handwritten_Digits.BL
     {
         public void PrintDigit(DigitModel digit)
         {
-            Console.WriteLine("\n\n" + digit.Digit);
+            Console.WriteLine("\n\n << " + digit.Digit+" >>");
             int rowLength = (int)Math.Sqrt(digit.DigitRepresentation.Length);
             for (int i = 0; i < rowLength; i++)
             {
