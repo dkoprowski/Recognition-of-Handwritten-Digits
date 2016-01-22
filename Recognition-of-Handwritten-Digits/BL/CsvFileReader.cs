@@ -49,6 +49,32 @@ namespace Recognition_of_Handwritten_Digits.BL
             return digitModels;
         }
 
+        public DigitModel ParseCsvSingleRow(string csvPath, int pictureSize)
+        {
+            var reader = new StreamReader(File.OpenRead(csvPath));
+            string firstLine = reader.ReadLine();
+            byte acumulator = 0;
+            int pixelNr = 0;
+            byte digitLabel = (byte)(firstLine[0] - '0');
+            DigitModel currentModel = new DigitModel(digitLabel, pictureSize);
+            for (int i = 1; i < firstLine.Length; i++)
+            {
+                char currentChar = firstLine[i];
+                if (currentChar >= '0' && currentChar <= '9')
+                {
+                    acumulator = (byte)(acumulator * 10 + (currentChar - '0'));
+                }
+                else if (pixelNr < pictureSize)
+                {
+                    currentModel.DigitRepresentation[pixelNr] = acumulator;
+                    acumulator = 0;
+                    pixelNr++;
+                }
+            }
+
+            return currentModel;
+        }
+
         public int OptimizedIntConversion(string s)
         {
             int total = 0;

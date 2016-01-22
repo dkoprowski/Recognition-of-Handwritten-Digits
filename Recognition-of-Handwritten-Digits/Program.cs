@@ -11,16 +11,15 @@ namespace Recognition_of_Handwritten_Digits
 {
     class Program
     {
-        static List<DigitModel> digitModels = new List<DigitModel>();
+        static private List<DigitModel> digitModels = new List<DigitModel>();
+        static private CsvFileReader csvReader = new CsvFileReader();
 
         static void Main(string[] args)
         {
-            CsvFileReader csvFile = new CsvFileReader();
-
             if (args.Length > 0 && !string.IsNullOrEmpty(args[0]))
             {
                 var start = DateTime.Now;
-                digitModels = csvFile.ParseCsvAsStream(args[0], 28 * 28);
+                digitModels = csvReader.ParseCsvAsStream(args[0], 28 * 28);
                 var finish = DateTime.Now;
                 Console.WriteLine("[TIME] Whole time for _" + digitModels.Count + "_ records: " + (finish - start).TotalMilliseconds);
 
@@ -40,6 +39,7 @@ namespace Recognition_of_Handwritten_Digits
             {
                 Console.WriteLine("\nSelect one option:");
                 Console.WriteLine("\t[1] Print one digit");
+                Console.WriteLine("\t[2] Load from CSV one digit");
                 Console.WriteLine("\t[q] Quit");
                 option = Console.ReadLine();
                 Answer(option);
@@ -58,6 +58,11 @@ namespace Recognition_of_Handwritten_Digits
                     Console.WriteLine("Write digit index:");
                     var index = int.Parse( Console.ReadLine());
                     digitPrinter.PrintDigit(digitModels[index]);
+                    break;
+                case "2":
+                    Console.WriteLine("Write CSV name:");
+                    var csvName = Console.ReadLine();
+                    digitPrinter.PrintDigit( csvReader.ParseCsvSingleRow(csvName, 28 * 28) );
                     break;
             }
 
